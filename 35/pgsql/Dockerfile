@@ -1,6 +1,12 @@
 FROM php:7.2-apache
 
-WORKDIR /root
+COPY ./moodle-devmode /usr/local/bin/moodle-devmode
+COPY ./moodle-prodmode /usr/local/bin/moodle-prodmode
+RUN chmod 0775 /usr/local/bin/moodle-devmode && chmod 0775 /usr/local/bin/moodle-prodmode
+
+RUN apt-get update && apt-get install -y zlib1g-dev libpng-dev libicu-dev libxml2-dev
+RUN docker-php-ext-install zip gd intl xmlrpc soap \
+    && docker-php-ext-enable zip gd intl xmlrpc soap opcache
 
 RUN curl -L https://download.moodle.org/download.php/direct/stable35/moodle-latest-35.tgz > ./moodle.tgz
 RUN tar -xvzf ./moodle.tgz -C /var/www/html/ \
@@ -9,13 +15,6 @@ RUN tar -xvzf ./moodle.tgz -C /var/www/html/ \
 RUN mkdir /var/www/moodledata && chmod -R 0777 /var/www/moodledata
 RUN rmdir /var/www/html/moodle && rm ./moodle.tgz
 
-COPY ./moodle-devmode /usr/local/bin/moodle-devmode
-COPY ./moodle-prodmode /usr/local/bin/moodle-prodmode
-RUN chmod 0775 /usr/local/bin/moodle-devmode && chmod 0775 /usr/local/bin/moodle-prodmode
-
+RUN apt-get install -y libpq-dev && docker-php-ext-install pgsql && docker-php-ext-enable pgsql
 WORKDIR /var/www/html
-RUN chmod -R 0777 /var/www/html
 
-RUN apt-get update && apt-get install -y zlib1g-dev libpng-dev libicu-dev libxml2-dev libpq-dev
-RUN docker-php-ext-install zip gd intl xmlrpc soap pgsql
-RUN docker-php-ext-enable zip gd intl xmlrpc soap pgsql opcache

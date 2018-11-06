@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y zlib1g-dev libpng-dev libicu-dev libxml
 RUN docker-php-ext-install zip gd intl xmlrpc soap \
     && docker-php-ext-enable zip gd intl xmlrpc soap opcache
 
-RUN curl -L https://download.moodle.org/download.php/direct/stable35/moodle-latest-35.tgz > ./moodle.tgz
+RUN curl -L https://download.moodle.org/download.php/direct/stable34/moodle-latest-34.tgz > ./moodle.tgz
 RUN tar -xvzf ./moodle.tgz -C /var/www/html/ \
     && mv /var/www/html/moodle/* /var/www/html/ \
     && mv /var/www/html/moodle/.[!.]* /var/www/html/

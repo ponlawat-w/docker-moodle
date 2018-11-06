@@ -8,13 +8,13 @@ RUN apt-get update && apt-get install -y zlib1g-dev libpng-dev libicu-dev libxml
 RUN docker-php-ext-install zip gd intl xmlrpc soap \
     && docker-php-ext-enable zip gd intl xmlrpc soap opcache
 
-RUN curl -L https://download.moodle.org/download.php/direct/stable35/moodle-latest-35.tgz > ./moodle.tgz
+RUN curl -L https://download.moodle.org/download.php/direct/stable34/moodle-latest-34.tgz > ./moodle.tgz
 RUN tar -xvzf ./moodle.tgz -C /var/www/html/ \
     && mv /var/www/html/moodle/* /var/www/html/ \
     && mv /var/www/html/moodle/.[!.]* /var/www/html/
 RUN mkdir /var/www/moodledata && chmod -R 0777 /var/www/moodledata
 RUN rmdir /var/www/html/moodle && rm ./moodle.tgz
 
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN apt-get install -y libpq-dev && docker-php-ext-install pgsql && docker-php-ext-enable pgsql
 WORKDIR /var/www/html
 
